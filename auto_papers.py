@@ -7,8 +7,8 @@ import json
 import time
 import shutil
 
-today = date.today()
-current_date = today.strftime("%Y/%m/%d")
+#today = date.today()
+#current_date = today.strftime("%Y/%m/%d")
 
 class MyHandler(FileSystemEventHandler):
     def on_modified(self, event):
