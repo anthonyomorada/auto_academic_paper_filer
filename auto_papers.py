@@ -4,40 +4,37 @@
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 from datetime import date
-from pdfrw import PdfReader
+from PyPDF2 import PdfFileReader
 
 import os
 import json
 import time
 import shutil
 
-#today = date.today()
-#current_date = today.strftime("%Y/%m/%d")
+## PDF Title
+def get_pdf_title(pdf_file_path):
 
-## PDF Name
-def renameFileToPDFTitle(path, fileName):
-    fullName = os.path.join(path, fileName)
-    # Extract pdf title from pdf file
-    newName = PdfReader(fullName).Info.Title
-    # Remove surrounding brackets that some pdf titles have
-    newName = newName.strip('()') + '.pdf'
-    newFullName = os.path.join(path, newName)
-    os.rename(fullName, newFullName)
-
+    pdf_reader = PdfFileReader(open(pdf_file_path, "rb")) 
+    return pdf_reader.getDocumentInfo().title
 
 ## HANDLER
 class MyHandler(FileSystemEventHandler):
     def on_modified(self, event):
         for filename in os.listdir(folder_to_track):
+            # Rename only pdf files
             if filename.endswith('.pdf'):
                 src = folder_to_track + "/" + filename
-                new_destination = folder_destination + "/" + filename
-                os.rename(src, new_destination)
-
+                new_filename = get_pdf_title(src)
+                input = PdfFileReader(src)
+                if input.isEncrypted:
+                    new_destination = folder_destination + "/" + filename + ".pdf"
+                    os.rename(src,new_destination)
+                else:
+                    new_destination = folder_destination + "/" + new_filename + ".pdf"
+                    os.rename(src,new_destination)
 
 folder_to_track = "/Users/anthonymorada/Desktop/myFolder"
 folder_destination = "/Users/anthonymorada/Desktop/newFolder"
-path = "/Users/anthonymorada/Desktop/newFolder"
 
 event_handler = MyHandler()
 observer = Observer()
