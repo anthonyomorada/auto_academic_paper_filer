@@ -1,2 +1,2 @@
 # academic-paper-organizer
- Organizes academic papers to a "Papers to Read" Folder
+Transfers pdfs (assuming these are the documents you want to read later) and sends them to a "Papers To Read" folder.
